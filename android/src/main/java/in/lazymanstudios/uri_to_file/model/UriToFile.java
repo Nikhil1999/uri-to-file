@@ -71,11 +71,11 @@ public class UriToFile {
     }
 
     private void sendUnsupportedUriMessage(MethodChannel.Result result) {
-        result.error("101", "Uri not supported", null);
+        result.error("URI_NOT_SUPPORTED", "Uri not supported", null);
     }
 
     private void sendUnableToGetFileName(MethodChannel.Result result) {
-        result.error("102", "Unable to get filename", null);
+        result.error("IO_EXCEPTION", "Unable to fetch filename", null);
     }
 
     private static class CopyFileCallable implements Callable<Boolean> {
@@ -112,10 +112,11 @@ public class UriToFile {
                 if(filepath != null && !filepath.isEmpty()) {
                     sendSuccessResult(filepath);
                 } else {
-                    sendErrorResult("103", "Unable to get filepath");
+                    sendErrorResult("IO_EXCEPTION", "Unable to fetch filepath");
                 }
             } catch (final Exception e) {
-                sendErrorResult("103", e.getMessage());
+                e.printStackTrace();
+                sendErrorResult("IO_EXCEPTION", e.getMessage());
             }
             return true;
         }
