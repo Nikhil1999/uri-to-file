@@ -2,6 +2,10 @@
 
 A Flutter plugin for converting uri to file. Supports Android.
 
+**Supported Uri Schema**
+
+1. content://
+
 ## Get started
 
 ### Add dependency
@@ -14,7 +18,7 @@ dependencies:
 ### Super simple to use
 
 ```dart
-    import 'dart:io';
+import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:uri_to_file/uri_to_file.dart';
