@@ -53,6 +53,10 @@ void getFile() async {
 }
 ```
 
+### Working example
+
+![Working example](https://raw.githubusercontent.com/Nikhil1999/uri-to-file/dev/example/output/Output.gif 'Working example')
+
 ## Copyright & License
 
 MIT License
