@@ -1,5 +1,7 @@
 # uri_to_file
 
+[![Pub](https://img.shields.io/pub/v/uri_to_file.svg?style=flat-square&logo=flutter&label=uri_to_file&color=blue)](https://pub.dev/packages/uri_to_file)
+
 A Flutter plugin for converting uri to file. Supports Android.
 
 **Supported Uri Schema**
