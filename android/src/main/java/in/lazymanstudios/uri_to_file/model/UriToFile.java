@@ -98,7 +98,10 @@ public class UriToFile {
                 AssetFileDescriptor assetFileDescriptor = context.getContentResolver().openAssetFileDescriptor(uri, "r");
                 FileChannel inputChannel = new FileInputStream(assetFileDescriptor.getFileDescriptor()).getChannel();
 
-                File file = File.createTempFile(name, ext, context.getCacheDir());
+                File parent = new File(context.getFilesDir() + File.separator + "uri_to_file");
+                parent.mkdirs();
+
+                File file = new File(context.getFilesDir() + File.separator + "uri_to_file" + File.separator + name + ext);
                 file.deleteOnExit();
 
                 FileChannel outputChannel = new FileOutputStream(file).getChannel();
