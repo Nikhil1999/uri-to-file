@@ -3,7 +3,7 @@ description: A Flutter plugin for converting uri to file. Supports Android.
 homepage: https://github.com/Nikhil1999/uri-to-file
 repository: https://github.com/Nikhil1999/uri-to-file
 issue_tracker: https://github.com/Nikhil1999/uri-to-file/issues
-version: 0.1.0
+version: 0.1.1
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
