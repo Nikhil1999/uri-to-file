@@ -43,4 +43,17 @@ jobs:
             echo "${{ secrets.FLUTTER_PUBLISH_CREDENTIALS }}" > credentials.json
             
         - name: Publish Package
-          run: flutter pub publish --dry-run
+          run: flutter pub publish
+          
+        - name: Create App Version Env
+          run: echo 'APP_VERSION'=`awk '/version:/ || /version:/{print}' ./pubspec.yaml | awk -F' ' '{print $2}' | awk -F'+' '{print $1}'` >> $GITHUB_ENV
+          
+        - name: Create Release
+          uses: actions/create-release@v1
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            tag_name: 'v${{ env.APP_VERSION }}'
+            release_name: 'Release v${{ env.APP_VERSION }}'
+            draft: false
+            prerelease: false
