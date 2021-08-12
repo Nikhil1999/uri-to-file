@@ -39,7 +39,7 @@ jobs:
           
         - name: Create credentials.json
           run: |
-            cd ${{ env.FLUTTER_HOME }}/.pub-cache
+            cd ${{ env.PUB_CACHE }}
             echo "${{ secrets.FLUTTER_PUBLISH_CREDENTIALS }}" > credentials.json
             
         - name: Publish Package
