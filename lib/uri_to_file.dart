@@ -1,25 +1,76 @@
 import 'dart:io';
 
 import 'package:flutter/services.dart';
+import 'model/custom_exception/uri_io_exception.dart';
 
-class UriToFile {
-  /// MethodChannel Helper
-  static const MethodChannel _methodChannel =
-      const MethodChannel('in.lazymanstudios.uritofile/helper');
+/// Method Channel Helper
+const MethodChannel _methodChannel =
+    const MethodChannel('in.lazymanstudios.uritofile/helper');
 
-  /// Error code for PlatformException
-  static const String URI_NOT_SUPPORTED = 'URI_NOT_SUPPORTED';
+// Check testing mode
+bool get isTesting => Platform.environment.containsKey('FLUTTER_TEST');
 
-  /// Error code for PlatformException
-  static const String IO_EXCEPTION = 'IO_EXCEPTION';
+/// Error code for PlatformException
+const String _URI_NOT_SUPPORTED = 'URI_NOT_SUPPORTED';
 
-  /// To convert a uri to file
-  ///
-  /// Supported uri schema
-  /// - content
-  static Future<File> toFile(String uriString) async {
-    String filepath =
-        await _methodChannel.invokeMethod("fromUri", {"uriString": uriString});
-    return File(filepath);
+/// Error code for PlatformException
+const String _IO_EXCEPTION = 'IO_EXCEPTION';
+
+/// Check [Uri] is supported or not
+///
+/// Supported [Uri] scheme same as supported by File.fromUri(uri) with content [Uri] (Android Only)
+///
+/// returns
+/// - true  if [Uri] supported
+/// - false if [Uri] not supported
+///
+/// [bool] isTesting used for testing purpose
+bool isUriSupported(Uri uri) {
+  if ((Platform.isAndroid || isTesting) && uri.isScheme('content')) {
+    return true;
   }
+
+  try {
+    File.fromUri(uri);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+/// Create a [File] object from a [Uri].
+///
+/// Supported [Uri] scheme same as supported by File.fromUri(uri) with content [Uri] (Android Only)
+///
+/// If [Uri] cannot reference a file this throws [UnsupportedError] or [IOException]
+///
+/// [bool] isTesting used for testing purpose
+Future<File> toFile(Uri uri) async {
+  if ((Platform.isAndroid || isTesting) && uri.isScheme('content')) {
+    try {
+      String filepath = await _methodChannel
+          .invokeMethod("fromUri", {"uriString": uri.toString()});
+      return File(filepath);
+    } on PlatformException catch (e) {
+      switch (e.code) {
+        case _URI_NOT_SUPPORTED:
+          {
+            throw UnsupportedError(
+                'Cannot extract a file path from a ${uri.scheme} URI');
+          }
+        case _IO_EXCEPTION:
+          {
+            throw UriIOException(e.message);
+          }
+        default:
+          {
+            rethrow;
+          }
+      }
+    } on Exception {
+      rethrow;
+    }
+  }
+
+  return File.fromUri(uri);
 }
