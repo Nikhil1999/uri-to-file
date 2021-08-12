@@ -2,11 +2,12 @@
 
 [![Pub](https://img.shields.io/pub/v/uri_to_file.svg?style=flat-square&logo=dart&label=pub.dev&color=blue)](https://pub.dev/packages/uri_to_file)
 
-A Flutter plugin for converting uri to file. Supports Android.
+A Flutter plugin for converting supported uri to file. Supports Android & iOS.
 
 **Supported Uri Schema**
 
-1. content://
+- content:// (Android Only)
+- Schema supported by File.fromUri(uri)
 
 ## Get started
 
@@ -14,7 +15,7 @@ A Flutter plugin for converting uri to file. Supports Android.
 
 ```yaml
 dependencies:
-  uri_to_file: ^0.1.2
+  uri_to_file: ^0.1.3
 ```
 
 ### Super simple to use
@@ -22,33 +23,19 @@ dependencies:
 ```dart
 import 'dart:io';
 
-import 'package:flutter/services.dart';
 import 'package:uri_to_file/uri_to_file.dart';
 
-void getFile() async {
+Future<void> convertUriToFile() async {
   try {
-    String uri = 'content://sample.txt';
-    File file = await UriToFile.toFile(uri);
-  } on PlatformException catch (e) {
-    switch (e.code) {
-      case UriToFile.URI_NOT_SUPPORTED:
-        {
-          print(e.message); // For uri not supported
-          break;
-        }
-      case UriToFile.IO_EXCEPTION:
-        {
-          print(e.message); // For IO exception
-          break;
-        }
-      default:
-        {
-          print(e.message); // For default exception
-          break;
-        }
-    }
+    String uriString = 'content://sample.txt'; // Uri string
+    Uri uri = Uri.parse(uriString); // Parsing uri string to uri
+    File file = await toFile(uri); // Converting uri to file
+  } on UnsupportedError catch (e) {
+    print(e.message); // Unsupported error for uri not supported
+  } on IOException catch (e) {
+    print(e); // IOException for system error
   } on Exception catch (e) {
-    print(e); // For default exception
+    print(e); // General exception
   }
 }
 ```
@@ -56,6 +43,14 @@ void getFile() async {
 ### Working example
 
 ![Working example](https://raw.githubusercontent.com/Nikhil1999/uri-to-file/dev/example/output/Output.gif 'Working example')
+
+### Background
+
+- **content:// (Android Only)**
+  uri_to_file creates a temporary file using the content:// uri with the help of native channel that stores this file in the application directory.
+
+- All the others uri are handled by flutter sdk itself with the help of
+  **File.fromUri(uri)**
 
 ## Copyright & License
 
