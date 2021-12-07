@@ -15,7 +15,7 @@ A Flutter plugin for converting supported uri to file. Supports Android & iOS.
 
 ```yaml
 dependencies:
-  uri_to_file: ^0.1.3
+  uri_to_file: ^0.2.0
 ```
 
 ### Super simple to use
