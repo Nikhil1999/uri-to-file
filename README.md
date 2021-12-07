@@ -28,13 +28,22 @@ import 'package:uri_to_file/uri_to_file.dart';
 Future<void> convertUriToFile() async {
   try {
     String uriString = 'content://sample.txt'; // Uri string
-    Uri uri = Uri.parse(uriString); // Parsing uri string to uri
-    File file = await toFile(uri); // Converting uri to file
+
+    // Don't pass uri parameter value using [Uri] object via uri.toString() method
+    // Because [Uri] object changes the authority name to lower case which causes this package to misbehave
+
+    // If you are using uni_links package for deep linking purpose.
+    // Pass the uri string value using getInitialLink() or linkStream
+
+    // Check out the full example
+    // https://pub.dev/packages/uri_to_file/example
+
+    File file = await toFile(uriString); // Converting uri to file
   } on UnsupportedError catch (e) {
     print(e.message); // Unsupported error for uri not supported
   } on IOException catch (e) {
     print(e); // IOException for system error
-  } on Exception catch (e) {
+  } catch (e) {
     print(e); // General exception
   }
 }
