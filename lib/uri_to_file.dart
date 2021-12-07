@@ -7,26 +7,29 @@ import 'model/custom_exception/uri_io_exception.dart';
 const MethodChannel _methodChannel =
     const MethodChannel('in.lazymanstudios.uritofile/helper');
 
-// Check testing mode
-bool get isTesting => Platform.environment.containsKey('FLUTTER_TEST');
-
 /// Error code for PlatformException
 const String _URI_NOT_SUPPORTED = 'URI_NOT_SUPPORTED';
 
 /// Error code for PlatformException
 const String _IO_EXCEPTION = 'IO_EXCEPTION';
 
-/// Check [Uri] is supported or not
+/// Check uri is supported or not
 ///
-/// Supported [Uri] scheme same as supported by File.fromUri(uri) with content [Uri] (Android Only)
+/// Don't pass uri parameter value using [Uri] object via uri.toString() method
+///
+/// Because [Uri] object changes the authority name to lower case which causes this package to misbehave
+///
+/// If you are using uni_links package for deep linking purpose.
+/// Pass the uri string value using getInitialLink() or linkStream
+///
+/// Supported uri scheme same as supported by File.fromUri(uri) with content uri (Android Only)
 ///
 /// returns
-/// - true  if [Uri] supported
-/// - false if [Uri] not supported
-///
-/// [bool] isTesting used for testing purpose
-bool isUriSupported(Uri uri) {
-  if ((Platform.isAndroid || isTesting) && uri.isScheme('content')) {
+/// - true  if uri supported
+/// - false if uri not supported
+bool isUriSupported(String uriString) {
+  Uri uri = Uri.parse(uriString);
+  if (Platform.isAndroid && uri.isScheme('content')) {
     return true;
   }
 
@@ -38,18 +41,24 @@ bool isUriSupported(Uri uri) {
   }
 }
 
-/// Create a [File] object from a [Uri].
+/// Create a [File] object from a uri.
 ///
-/// Supported [Uri] scheme same as supported by File.fromUri(uri) with content [Uri] (Android Only)
+/// Don't pass uri parameter value using [Uri] object via uri.toString() method
 ///
-/// If [Uri] cannot reference a file this throws [UnsupportedError] or [IOException]
+/// Because [Uri] object changes the authority name to lower case which causes this package to misbehave
 ///
-/// [bool] isTesting used for testing purpose
-Future<File> toFile(Uri uri) async {
-  if ((Platform.isAndroid || isTesting) && uri.isScheme('content')) {
+/// If you are using uni_links package for deep linking purpose.
+/// Pass the uri string value using getInitialLink() or linkStream
+///
+/// Supported uri scheme same as supported by File.fromUri(uri) with content uri (Android Only)
+///
+/// If uri cannot reference a file this throws [UnsupportedError] or [IOException]
+Future<File> toFile(String uriString) async {
+  Uri uri = Uri.parse(uriString);
+  if (Platform.isAndroid && uri.isScheme('content')) {
     try {
       String filepath = await _methodChannel
-          .invokeMethod("fromUri", {"uriString": uri.toString()});
+          .invokeMethod("fromUri", {"uriString": uriString});
       return File(filepath);
     } on PlatformException catch (e) {
       switch (e.code) {
@@ -67,7 +76,7 @@ Future<File> toFile(Uri uri) async {
             rethrow;
           }
       }
-    } on Exception {
+    } catch (e) {
       rethrow;
     }
   }

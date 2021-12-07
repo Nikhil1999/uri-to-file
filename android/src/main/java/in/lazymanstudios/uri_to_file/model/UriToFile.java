@@ -58,8 +58,15 @@ public class UriToFile {
         if (cursor != null && cursor.moveToFirst())
         {
             int index = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-            filename = cursor.getString(index);
+            if (index != -1) {
+                filename = cursor.getString(index);
+            }
         }
+
+        if(filename == null) {
+            filename = uri.getLastPathSegment();
+        }
+
         if (cursor != null) {
             cursor.close();
         }

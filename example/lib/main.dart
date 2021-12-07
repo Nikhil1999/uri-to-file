@@ -45,23 +45,23 @@ class _MyAppState extends State<MyApp> {
 
   /// To get initial uri
   Future<void> _processInitialUri() async {
-    Uri? uri = await getInitialUri();
-    _processUri(uri);
+    String? uriString = await getInitialLink();
+    _processUri(uriString);
   }
 
   /// To listen for uri
   void _listenForUri() {
-    uriLinkStream.listen((uri) => _processUri(uri));
+    linkStream.listen((uriString) => _processUri(uriString));
   }
 
   /// To process uri
-  Future<void> _processUri(Uri? uri) async {
+  Future<void> _processUri(String? uriString) async {
     try {
-      if (uri != null) {
+      if (uriString != null) {
         _hasError = false;
         _isLoading = true;
         setState(() {});
-        _file = await toFile(uri);
+        _file = await toFile(uriString);
         if (widget.isTesting) {
           await Future.delayed(Duration(seconds: 5 + Random().nextInt(5)));
         }
@@ -93,7 +93,7 @@ class _MyAppState extends State<MyApp> {
     await sampleFile.writeAsString('Testing uri_to_file package...');
     Uri uri = Uri.file(sampleFile.path);
 
-    await _processUri(uri);
+    await _processUri(uri.toString());
   }
 
   /// To get file name
