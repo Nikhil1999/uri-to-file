@@ -15,12 +15,11 @@ const String _IO_EXCEPTION = 'IO_EXCEPTION';
 
 /// Check uri is supported or not
 ///
-/// Don't pass uri parameter value using [Uri] object via uri.toString() method
-///
-/// Because [Uri] object changes the authority name to lower case which causes this package to misbehave
+/// Don't pass uri parameter using [Uri] object via uri.toString().
+/// Because uri.toString() changes the string to lowercase which causes this package to misbehave
 ///
 /// If you are using uni_links package for deep linking purpose.
-/// Pass the uri string value using getInitialLink() or linkStream
+/// Pass the uri string using getInitialLink() or linkStream
 ///
 /// Supported uri scheme same as supported by File.fromUri(uri) with content uri (Android Only)
 ///
@@ -43,12 +42,11 @@ bool isUriSupported(String uriString) {
 
 /// Create a [File] object from a uri.
 ///
-/// Don't pass uri parameter value using [Uri] object via uri.toString() method
-///
-/// Because [Uri] object changes the authority name to lower case which causes this package to misbehave
+/// Don't pass uri parameter using [Uri] object via uri.toString().
+/// Because uri.toString() changes the string to lowercase which causes this package to misbehave
 ///
 /// If you are using uni_links package for deep linking purpose.
-/// Pass the uri string value using getInitialLink() or linkStream
+/// Pass the uri string using getInitialLink() or linkStream
 ///
 /// Supported uri scheme same as supported by File.fromUri(uri) with content uri (Android Only)
 ///
