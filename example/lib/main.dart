@@ -95,12 +95,12 @@ class _MyAppState extends State<MyApp> {
   }
 
   Widget _getStepsInfo() {
-    return Column(
+    return const Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Note:',
           overflow: TextOverflow.ellipsis,
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -109,7 +109,7 @@ class _MyAppState extends State<MyApp> {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
+          children: [
             Text(
               '-',
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
@@ -126,7 +126,7 @@ class _MyAppState extends State<MyApp> {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
+          children: [
             Text(
               '-',
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
@@ -150,8 +150,8 @@ class _MyAppState extends State<MyApp> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Row(
-            children: const [
+          const Row(
+            children: [
               Expanded(
                 child: Text(
                   'Opened',
@@ -162,8 +162,8 @@ class _MyAppState extends State<MyApp> {
               ),
             ],
           ),
-          Row(
-            children: const [
+          const Row(
+            children: [
               Expanded(
                 child: Text(
                   'File Name',
