@@ -1,7 +1,7 @@
 ## 1.0.0
 
 - Fixed error with files having no extension in their name
-- Updated package to support flutter 3.7.1
+- Updated package to support flutter 3.10.6
 
 ## 0.2.0
 
