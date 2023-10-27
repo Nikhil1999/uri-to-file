@@ -3,6 +3,7 @@ package in.lazymanstudios.uri_to_file.model;
 import android.os.Handler;
 import android.os.Looper;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import io.flutter.plugin.common.MethodChannel;
 
@@ -26,7 +27,7 @@ public class MethodResultWrapper implements MethodChannel.Result {
     }
 
     @Override
-    public void error(final String errorCode, @Nullable final String errorMessage, @Nullable final Object errorDetails) {
+    public void error(@NonNull final String errorCode, @Nullable final String errorMessage, @Nullable final Object errorDetails) {
         handler.post(new Runnable() {
             @Override
             public void run() {

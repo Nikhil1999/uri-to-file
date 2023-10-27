@@ -1,4 +1,4 @@
-package in.lazymanstudios.uri_to_file.helper;
+package in.lazymanstudios.uri_to_file;
 
 import android.content.Context;
 
@@ -8,11 +8,11 @@ import in.lazymanstudios.uri_to_file.model.UriToFile;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
-public class UriToFileMethodCallHandler implements MethodChannel.MethodCallHandler {
-    private final UriToFile uriToFile;
+public class UriToFileMethodHandler implements MethodChannel.MethodCallHandler {
+    private final UriToFile model;
 
-    public UriToFileMethodCallHandler(Context context) {
-        uriToFile = new UriToFile(context);
+    public UriToFileMethodHandler(Context context) {
+        model = new UriToFile(context);
     }
 
     @Override
@@ -20,7 +20,11 @@ public class UriToFileMethodCallHandler implements MethodChannel.MethodCallHandl
         switch (call.method) {
             case "fromUri": {
                 String uriString = call.argument("uriString");
-                uriToFile.fromUri(new MethodResultWrapper(result), uriString);
+                model.fromUri(new MethodResultWrapper(result), uriString);
+                break;
+            }
+            case "clearTemporaryFiles": {
+                model.clearTemporaryFiles(new MethodResultWrapper(result));
                 break;
             }
             default: {

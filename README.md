@@ -15,7 +15,7 @@ A Flutter plugin for converting supported uri to file. Supports Android & iOS.
 
 ```yaml
 dependencies:
-  uri_to_file: ^0.2.0
+  uri_to_file: ^1.0.0
 ```
 
 ### Super simple to use
@@ -36,12 +36,8 @@ Future<void> convertUriToFile() async {
     // Pass the uri string using getInitialLink() or linkStream
 
     File file = await toFile(uriString); // Converting uri to file
-  } on UnsupportedError catch (e) {
-    print(e.message); // Unsupported error for uri not supported
-  } on IOException catch (e) {
-    print(e); // IOException for system error
   } catch (e) {
-    print(e); // General exception
+    print(e); // Exception
   }
 }
 ```

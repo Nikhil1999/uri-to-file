@@ -4,7 +4,6 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
-import in.lazymanstudios.uri_to_file.helper.UriToFileMethodCallHandler;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodChannel;
@@ -27,7 +26,7 @@ public class UriToFilePlugin implements FlutterPlugin {
 
   void setupMethodChannel(Context context, BinaryMessenger binaryMessenger) {
     methodChannel = new MethodChannel(binaryMessenger, METHOD_CHANNEL);
-    UriToFileMethodCallHandler methodCallHandler = new UriToFileMethodCallHandler(context);
+    UriToFileMethodHandler methodCallHandler = new UriToFileMethodHandler(context);
     methodChannel.setMethodCallHandler(methodCallHandler);
   }
 

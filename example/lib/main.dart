@@ -1,26 +1,25 @@
 import 'dart:io';
-import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:path_provider/path_provider.dart';
-
+import 'package:path/path.dart';
 import 'package:uni_links/uni_links.dart';
+import 'dart:async';
+
 import 'package:uri_to_file/uri_to_file.dart';
 
-void main({bool isTesting = false}) {
-  runApp(MyApp(
-    isTesting: isTesting,
-  ));
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await clearTemporaryFiles();
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
-  final bool isTesting;
-
-  MyApp({this.isTesting = false});
+  const MyApp({super.key});
 
   @override
-  _MyAppState createState() => _MyAppState();
+  State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
@@ -35,12 +34,8 @@ class _MyAppState extends State<MyApp> {
 
   /// To init
   void init() {
-    if (!widget.isTesting) {
-      _processInitialUri();
-      _listenForUri();
-    } else {
-      _mockUri();
-    }
+    _processInitialUri();
+    _listenForUri();
   }
 
   /// To get initial uri
@@ -62,45 +57,14 @@ class _MyAppState extends State<MyApp> {
         _isLoading = true;
         setState(() {});
         _file = await toFile(uriString);
-        if (widget.isTesting) {
-          await Future.delayed(Duration(seconds: 5 + Random().nextInt(5)));
-        }
         _isLoading = false;
         setState(() {});
       }
-    } on UnsupportedError catch (e) {
-      Fluttertoast.showToast(msg: 'Uri is not supported');
-      _hasError = true;
-      print(e.message);
-    } on IOException catch (e) {
+    } catch (e) {
       Fluttertoast.showToast(msg: 'Something went wrong. Please try again');
       _hasError = true;
-      print(e);
-    } on Exception catch (e) {
-      Fluttertoast.showToast(msg: 'Something went wrong. Please try again');
-      _hasError = true;
-      print(e.toString());
+      if (kDebugMode) print(e.toString());
     }
-  }
-
-  /// To mock uri (For testing)
-  Future<void> _mockUri() async {
-    await Future.delayed(Duration(seconds: 5 + Random().nextInt(5)));
-    Directory cacheDir = await getTemporaryDirectory();
-    File sampleFile =
-        File(cacheDir.path + Platform.pathSeparator + 'file_uri_sample.txt');
-    sampleFile.createSync();
-    await sampleFile.writeAsString('Testing uri_to_file package...');
-    Uri uri = Uri.file(sampleFile.path);
-
-    await _processUri(uri.toString());
-  }
-
-  /// To get file name
-  String _getFileNameString(File? file) {
-    return _file?.path.substring(
-            (_file?.path.lastIndexOf(Platform.pathSeparator) ?? -1) + 1) ??
-        '';
   }
 
   @override
@@ -108,7 +72,6 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          key: Key('appBar'),
           title: const Text('Uri To File Example'),
         ),
         body: Container(
@@ -133,7 +96,6 @@ class _MyAppState extends State<MyApp> {
 
   Widget _getStepsInfo() {
     return Column(
-      key: Key('stepsInfo'),
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -141,22 +103,21 @@ class _MyAppState extends State<MyApp> {
         const Text(
           'Note:',
           overflow: TextOverflow.ellipsis,
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
+          children: const [
+            Text(
               '-',
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
             ),
-            const Expanded(
-              child: const Text(
+            Expanded(
+              child: Text(
                 'Open any file from file browser app or any other app and select uri_to_file_example app.',
-                style:
-                    const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
               ),
             ),
           ],
@@ -165,16 +126,15 @@ class _MyAppState extends State<MyApp> {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
+          children: const [
+            Text(
               '-',
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
             ),
-            const Expanded(
-              child: const Text(
+            Expanded(
+              child: Text(
                 'File opened from file browser app or any other app.\nIt contains content:// uri.',
-                style:
-                    const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
               ),
             ),
           ],
@@ -186,33 +146,30 @@ class _MyAppState extends State<MyApp> {
   Widget _getFileDetails() {
     return Expanded(
       child: Column(
-        key: Key('fileDetails'),
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Row(
-            children: [
-              const Expanded(
-                child: const Text(
+            children: const [
+              Expanded(
+                child: Text(
                   'Opened',
                   textAlign: TextAlign.center,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.w600),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                 ),
               ),
             ],
           ),
           Row(
-            children: [
-              const Expanded(
-                child: const Text(
+            children: const [
+              Expanded(
+                child: Text(
                   'File Name',
                   textAlign: TextAlign.center,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.w600),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                 ),
               ),
             ],
@@ -224,25 +181,25 @@ class _MyAppState extends State<MyApp> {
   }
 
   Widget _getFileName() {
-    if (_isLoading)
+    if (_isLoading) {
       return Container(
-        key: Key('circularLoader'),
         margin: const EdgeInsets.only(top: 8.0),
         child: const SizedBox(
           width: 16.0,
           height: 16.0,
-          child: const CircularProgressIndicator(
+          child: CircularProgressIndicator(
             strokeWidth: 3.0,
           ),
         ),
       );
+    }
 
     if (_file != null) {
       return Row(
         children: [
           Expanded(
             child: Text(
-              _getFileNameString(_file),
+              basename(_file!.path),
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
