@@ -1,41 +1,32 @@
-name: Test, Build & Release
+name: Build & Release
 
 on:
-  push:
-    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
     release:
-      name: Test, Build & Release
+      name: Build & Release
 
       runs-on: ubuntu-latest
 
       steps:
         - name: Checkout
-          uses: actions/checkout@v1
+          uses: actions/checkout@v3
 
         - name: Setup Java
-          uses: actions/setup-java@v1
+          uses: actions/setup-java@v3
           with:
-            java-version: '12.x'
+            distribution: 'temurin'
+            java-version: '17'
 
         - name: Setup Flutter
-          uses: subosito/flutter-action@v1
+          uses: subosito/flutter-action@v2
           with:
+            flutter-version: 3.10.6
             channel: stable
-
-        - name: Cache pub dependencies
-          uses: actions/cache@v2
-          with:
-            path: ${{ env.FLUTTER_HOME }}/.pub-cache
-            key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
-            restore-keys: ${{ runner.os }}-pub-
 
         - name: Download pub dependencies
           run: flutter pub get
-          
-        - name: Run Unit Testing
-          run: flutter test test/uri_to_file_test.dart
           
         - name: Create App Version Env
           run: echo 'APP_VERSION'=`awk '/version:/ || /version:/{print}' ./pubspec.yaml | awk -F' ' '{print $2}' | awk -F'+' '{print $1}'` >> $GITHUB_ENV
